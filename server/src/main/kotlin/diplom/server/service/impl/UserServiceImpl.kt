@@ -5,6 +5,9 @@ import diplom.server.entity.UserEntity
 import diplom.server.repository.UserRepository
 import diplom.server.service.UserService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.core.authority.SimpleGrantedAuthority
+import org.springframework.security.core.userdetails.User
+import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
 
 @Service
@@ -42,4 +45,9 @@ class UserServiceImpl (
             email = this.email,
             password = this.password,
         )
+
+    override fun convertToUserDetails(userDto: UserDto): UserDetails {
+        val authorities = mutableListOf(SimpleGrantedAuthority("ROLE_USER"))
+        return User(userDto.email, userDto.password, authorities)
+    }
 }

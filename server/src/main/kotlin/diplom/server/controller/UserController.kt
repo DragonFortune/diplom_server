@@ -1,5 +1,7 @@
 package diplom.server.controller
 
+import diplom.server.JwtToken
+import diplom.server.dto.LoginResponse
 import diplom.server.dto.UserDto
 import diplom.server.service.UserService
 import org.springframework.http.HttpStatus
@@ -15,7 +17,8 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/users")
 class UserController (
     private val userService: UserService,
-    private val passwordEncoder: PasswordEncoder
+    private val passwordEncoder: PasswordEncoder,
+    private val jwtToken: JwtToken
 ) {
 
     @GetMapping
@@ -39,8 +42,12 @@ class UserController (
         val user = userService.findByEmail(request.email)
         if (user != null && passwordEncoder.matches(request.password, user.password)) {
             // Пользователь найден и пароль совпадает
-            // Возвращаем успех
-            return ResponseEntity.ok().build()
+            // Генерируем JWT токен
+            val userDetails = userService.convertToUserDetails(user)
+            val token = jwtToken.generateToken(userDetails) // Предполагается, что вы используете email как идентификатор пользователя
+
+            // Возвращаем токен в ответе
+            return ResponseEntity.ok(LoginResponse(token))
         } else {
             // Пользователь не найден или пароль не совпадает
             // Возвращаем ошибку
