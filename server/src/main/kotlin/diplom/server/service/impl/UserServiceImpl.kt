@@ -4,7 +4,6 @@ import diplom.server.dto.UserDto
 import diplom.server.entity.UserEntity
 import diplom.server.repository.UserRepository
 import diplom.server.service.UserService
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetails
@@ -21,7 +20,7 @@ class UserServiceImpl (
     }
 
     override fun create(dto: UserDto): Int {
-        return userRepository.save(dto.toEntity()).id
+        return userRepository.save(dto.toEntity()).user_id
     }
 
     override fun findByEmail(email: String): UserDto? {
@@ -32,7 +31,7 @@ class UserServiceImpl (
 
     private fun UserEntity.toDto(): UserDto =
         UserDto(
-            id = this.id,
+            user_id = this.user_id,
             user_name = this.user_name,
             email = this.email,
             password = this.password,
@@ -40,7 +39,7 @@ class UserServiceImpl (
 
     private fun UserDto.toEntity(): UserEntity =
         UserEntity(
-            id = 0,
+            user_id = 0,
             user_name = this.user_name ?: "",
             email = this.email,
             password = this.password,

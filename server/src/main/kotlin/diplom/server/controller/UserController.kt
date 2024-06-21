@@ -47,7 +47,7 @@ class UserController (
             val token = jwtToken.generateToken(userDetails) // Предполагается, что вы используете email как идентификатор пользователя
 
             // Возвращаем токен в ответе
-            return ResponseEntity.ok(LoginResponse(token))
+            return ResponseEntity.ok(LoginResponse(token, user.user_id, user.user_name))
         } else {
             // Пользователь не найден или пароль не совпадает
             // Возвращаем ошибку
